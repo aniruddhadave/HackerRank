@@ -1,22 +1,29 @@
-from sklearn import linear_model
+import numpy as np
+m,n = [int(i) for i in input().strip().split(" ")]
+X = []
+Y = []
+for i in range(n):
+    data = input().strip().split(" ")
+    X.append(data[:m])
+    Y.append(data[m:])
+q = int(input().strip())
 
-m,n = input().split(" ")
-inputs = []
-for i in range(int(n)):
-    inputs.append([float(j) for j in input().split(" ")])
+X_test = []
+for x in range(q):
+    X_test.append(input().strip().split(" "))
+X = np.array(X,float)
+Y = np.array(Y,float)
 
-y = [x.pop() for x in inputs]
-q = int(input())
-x_test = []
+# Normalize X, 
+mean = np.mean(X, axis = 0)
+sd = np.std(X, axis = 0)
+X_normalized = (X - mean) 
+X_test = np.array(X_test,float)
+X_test_normalized = (X_test - mean) 
 
-for i in range(q): 
-    x_test.append([float(j) for j in input().split(" ")])
+b = np.dot(np.linalg.inv(np.dot(X_normalized.transpose(),X_normalized)),np.dot(X_normalized.transpose(),Y - np.mean(Y)))
 
-model = linear_model.LinearRegression()
-model.fit(inputs, y)
-a = model.intercept_
-b = model.coef_
+Y_test = np.dot(X_test_normalized , b) + np.mean(Y)
 
-for m in range(0, len(x_test)):
-    y_pred = a + x_test[m][0] * b[0] + x_test[m][1] * b[1]
-    print (y_pred)
+for i in Y_test:
+    print(round(float(i),2))
